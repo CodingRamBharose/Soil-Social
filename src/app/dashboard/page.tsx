@@ -5,15 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserData } from "@/hooks/useUserData";
+import { usePosts } from "@/hooks/usePost";
+import { Loader2 } from "lucide-react";
+import { PostCard } from "@/components/dashboardComponents/PostCard";
 
 export default function DashboardPage() {
   const { user, isLoading, error } = useUserData();
+  const { posts, loading: postsLoading, error: postsError } = usePosts();
 
   if (isLoading || !user) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
-  if (error) {
+  if (error || postsError) {
     return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
   }
   
@@ -167,48 +171,22 @@ export default function DashboardPage() {
             <CardTitle>Your Farming Feed</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="border-b pb-4">
-              <div className="flex items-start gap-3">
-                <Avatar>
-                  <AvatarFallback>R</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Ram</p>
-                  <p className="text-sm text-gray-500">2h ago · Wheat Farmer</p>
-                  <p className="mt-2">
-                    Just implemented drip irrigation in my wheat fields. Seeing 30% water savings already! Anyone else using this technique?
-                  </p>
-                  <div className="flex gap-4 mt-3">
-                    <Button variant="ghost" size="sm">👍 12</Button>
-                    <Button variant="ghost" size="sm">💬 5</Button>
-                    <Button variant="ghost" size="sm">🔄 Share</Button>
-                  </div>
-                </div>
+            {postsLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
               </div>
-            </div>
-
-            {/* Sample Post 2 */}
-            <div className="border-b pb-4">
-              <div className="flex items-start gap-3">
-                <Avatar>
-                  <AvatarFallback>S</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Piyush</p>
-                  <p className="text-sm text-gray-500">5h ago · Organic Farmer</p>
-                  <p className="mt-2">
-                    Sharing my organic pest control recipe: Neem oil (5ml) + Garlic (10g) + Chili powder (5g) per liter of water. Works great for most common pests!
-                  </p>
-                  <div className="flex gap-4 mt-3">
-                    <Button variant="ghost" size="sm">👍 24</Button>
-                    <Button variant="ghost" size="sm">💬 8</Button>
-                    <Button variant="ghost" size="sm">🔄 Share</Button>
-                  </div>
-                </div>
+            ) : posts.length > 0 ? (
+              posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <p>No posts yet. Be the first to share!</p>
+                <Button asChild className="mt-4">
+                  <Link href="/post/create">Create Post</Link>
+                </Button>
               </div>
-            </div>
-
-            <Button variant="outline" className="w-full">Show more posts</Button>
+            )}
           </CardContent>
         </Card>
       </div>

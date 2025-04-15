@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface User extends Document {
   name: string;
@@ -12,7 +12,12 @@ export interface User extends Document {
   farmingTechniques?: string[];
   profilePicture?: string;
   bio?: string;
-  connections?: mongoose.Types.ObjectId[];
+  connections?: Types.ObjectId[];
+  groups?: Types.ObjectId[];
+  savedPosts?: Types.ObjectId[];
+  eventsAttending?: Types.ObjectId[];
+  resourcesShared?: Types.ObjectId[];
+  listings?: Types.ObjectId[];
 }
 
 const userSchema: Schema<User> = new Schema(
@@ -36,6 +41,11 @@ const userSchema: Schema<User> = new Schema(
     profilePicture: { type: String },
     bio: { type: String, maxlength: 500 },
     connections: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
+    savedPosts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    eventsAttending: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+    resourcesShared: [{ type: Schema.Types.ObjectId, ref: "Resource" }],
+    listings: [{ type: Schema.Types.ObjectId, ref: "MarketplaceListing" }]
   },
   { timestamps: true }
 );
