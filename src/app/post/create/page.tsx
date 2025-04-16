@@ -123,7 +123,7 @@ export default function CreatePostPage() {
                 </div>
                 <Label
                   htmlFor="images"
-                  className="flex items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50"
+                  className="flex items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-800"
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -156,7 +156,7 @@ export default function CreatePostPage() {
                 </div>
                 <Label
                   htmlFor="videos"
-                  className="flex items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-50"
+                  className="flex items-center justify-center gap-2 border-2 border-dashed rounded-md p-4 cursor-pointer hover:bg-gray-800"
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -201,7 +201,7 @@ export default function CreatePostPage() {
               </div>
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <Button type="submit" disabled={isLoading} className="w-full bg-green-600 hover:bg-green-700">
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
             </Button>
           </form>

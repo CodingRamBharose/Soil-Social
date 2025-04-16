@@ -8,6 +8,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { usePosts } from "@/hooks/usePost";
 import { Loader2 } from "lucide-react";
 import { PostCard } from "@/components/dashboardComponents/PostCard";
+import { WeatherCard } from "@/components/dashboardComponents/WeatherCard";
 
 export default function DashboardPage() {
   const { user, isLoading, error } = useUserData();
@@ -194,33 +195,7 @@ export default function DashboardPage() {
       {/* Right Sidebar */}
       <div className="space-y-4">
         {/* Weather */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Weather Updates</CardTitle>
-            <CardDescription>Patiala</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">28°C</p>
-                <p className="text-gray-600">Partly Cloudy</p>
-              </div>
-              <div className="text-4xl">🌤️</div>
-            </div>
-            <div className="grid grid-cols-5 gap-2 mt-4 text-center">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day) => (
-                <div key={day}>
-                  <p className="text-sm">{day}</p>
-                  <p className="text-xl">☀️</p>
-                  <p className="text-sm">30°</p>
-                </div>
-              ))}
-            </div>
-            <Button variant="link" className="mt-2 p-0 text-green-600" asChild>
-              <Link href="/weather">View detailed forecast</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <WeatherCard location={user?.location || null} />
 
         {/* Marketplace */}
         <Card>
