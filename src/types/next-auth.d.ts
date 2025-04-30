@@ -12,6 +12,11 @@ declare module "next-auth" {
     bio?: string;
     cropsGrown?: string[];
     farmingTechniques?: string[];
+    connections?: string[];
+    connectionRequests?: {
+      sent: string[];      
+      received: string[];
+    };
   }
 
   interface Session extends DefaultSession {
@@ -30,5 +35,10 @@ declare module "next-auth/jwt" {
     bio?: string;
     cropsGrown?: string[];
     farmingTechniques?: string[];
+    connections?: string[]; 
+    connectionRequests?: {
+      sent: string[];
+      received: string[];
+    };
   }
 }

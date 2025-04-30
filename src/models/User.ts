@@ -1,18 +1,24 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-export interface User extends Document {
+export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   verifyCode: string;
   verifyCodeExpiry: Date;
   isVerified: boolean;
+  emailVerified?: Date;
+  image?: string;
   location?: string;
   cropsGrown?: string[];
   farmingTechniques?: string[];
   profilePicture?: string;
   bio?: string;
   connections?: Types.ObjectId[];
+  connectionRequests?: {
+    sent: Types.ObjectId[];
+    received: Types.ObjectId[];
+  };
   groups?: Types.ObjectId[];
   savedPosts?: Types.ObjectId[];
   eventsAttending?: Types.ObjectId[];
@@ -20,7 +26,7 @@ export interface User extends Document {
   listings?: Types.ObjectId[];
 }
 
-const userSchema: Schema<User> = new Schema(
+const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { 
@@ -35,23 +41,25 @@ const userSchema: Schema<User> = new Schema(
     verifyCode: { type: String, required: true },
     verifyCodeExpiry: { type: Date, required: true },
     isVerified: { type: Boolean, default: false },
-    location: { type: String },
+    emailVerified: Date,
+    image: String,
+    location: String,
     cropsGrown: { type: [String], default: [] },
     farmingTechniques: { type: [String], default: [] },
-    profilePicture: { type: String },
+    profilePicture: String,
     bio: { type: String, maxlength: 500 },
-    connections: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
-    savedPosts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-    eventsAttending: [{ type: Schema.Types.ObjectId, ref: "Event" }],
-    resourcesShared: [{ type: Schema.Types.ObjectId, ref: "Resource" }],
-    listings: [{ type: Schema.Types.ObjectId, ref: "MarketplaceListing" }]
+    connections: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    connectionRequests: {
+      sent: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+      received: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+    },
+    groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+    savedPosts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    eventsAttending: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
+    resourcesShared: [{ type: Schema.Types.ObjectId, ref: 'Resource' }],
+    listings: [{ type: Schema.Types.ObjectId, ref: 'MarketplaceListing' }]
   },
   { timestamps: true }
 );
 
-const UserModel =
-  (mongoose.models.User as mongoose.Model<User>) ||
-  mongoose.model<User>("User", userSchema);
-
-export default UserModel;
+export default mongoose.models.User || mongoose.model<IUser>("User", userSchema);

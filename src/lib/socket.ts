@@ -1,0 +1,69 @@
+import { Server as NetServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
+import { NextApiResponse } from 'next';
+import { Notification } from '@/models/Notification';
+
+export type NextApiResponseWithSocket = NextApiResponse & {
+  socket: {
+    server: NetServer & {
+      io?: SocketIOServer;
+    };
+  };
+};
+
+export const initSocket = (res: NextApiResponseWithSocket) => {
+  if (!res.socket.server.io) {
+    const io = new SocketIOServer(res.socket.server, {
+      cors: {
+        origin: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        credentials: true
+      },
+      path: '/api/socket/io',
+      addTrailingSlash: false
+    });
+
+    io.on('connection', (socket) => {
+      const userId = socket.handshake.query.userId as string;
+      
+      if (!userId) {
+        console.error('No userId provided in socket connection');
+        socket.disconnect();
+        return;
+      }
+
+      // Join user's room
+      socket.join(userId);
+      console.log(`User ${userId} connected to notifications`);
+
+      // Handle notification events
+      socket.on('markAsRead', async (notificationId: string) => {
+        try {
+          // Emit to specific user
+          socket.to(userId).emit('notificationRead', notificationId);
+        } catch (error) {
+          console.error('Error handling markAsRead:', error);
+        }
+      });
+
+      socket.on('disconnect', () => {
+        console.log(`User ${userId} disconnected from notifications`);
+      });
+
+      socket.on('error', (error) => {
+        console.error('Socket error:', error);
+      });
+    });
+
+    res.socket.server.io = io;
+  }
+  return res.socket.server.io;
+};
+
+export const emitNotification = (io: SocketIOServer, userId: string, notification: Notification) => {
+  try {
+    io.to(userId).emit('notification', notification);
+  } catch (error) {
+    console.error('Error emitting notification:', error);
+  }
+}; 

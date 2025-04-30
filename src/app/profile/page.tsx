@@ -69,7 +69,7 @@ export default function ProfilePage() {
                   width={128}
                   height={128}
                   alt="Profile"
-                  className="rounded-full border-4 border-white bg-white"
+                  className="rounded-full border-4 h-32 border-white bg-white"
                 />
               ) : (
                 <Avatar className="w-32 h-32 border-4 border-white">

@@ -15,10 +15,16 @@ export async function GET() {
     const posts = await PostModel.find()
       .sort({ createdAt: -1 })
       .limit(20)
-      .populate("author", "name profilePicture")
+      .populate({
+        path: 'author',
+        select: 'name profilePicture cropsGrown farmingTechniques location'
+      })
       .lean();
 
-    return NextResponse.json(posts);
+    // Filter out posts where author is null
+    const validPosts = posts.filter(post => post.author !== null);
+
+    return NextResponse.json(validPosts);
   } catch (error) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(

@@ -9,7 +9,7 @@ export default function NavbarWrapper() {
   const pathname = usePathname();
 
   // Return null for auth paths
-  if (noNavbarPaths.some(path => pathname.startsWith(path))) {
+  if (noNavbarPaths.some(path => pathname?.startsWith(path))) {
     return null;
   }
 

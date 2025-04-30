@@ -1,21 +1,25 @@
-  import { v2 as cloudinary } from "cloudinary";
+export async function uploadImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '');
 
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
+  try {
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
 
-  export async function uploadImage(file: File): Promise<string> {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
 
-    return new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "farmconnect" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result?.secure_url || "");
-        })
-        .end(buffer);
-    });
+    const data = await response.json();
+    return data.secure_url;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
   }
+}

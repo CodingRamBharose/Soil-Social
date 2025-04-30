@@ -63,6 +63,8 @@ export const options: NextAuthOptions = {
         token.bio = user.bio;
         token.cropsGrown = user.cropsGrown;
         token.farmingTechniques = user.farmingTechniques;
+        token.connectionRequests = user.connectionRequests;
+        token.connections = user.connections;
       }
       return token;
     },
@@ -77,6 +79,8 @@ export const options: NextAuthOptions = {
         bio: token.bio,
         cropsGrown: token.cropsGrown,
         farmingTechniques: token.farmingTechniques,
+        connectionRequests: token.connectionRequests,
+        connections: token.connections
       };
       return session;
     },

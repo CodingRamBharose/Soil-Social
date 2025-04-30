@@ -6,59 +6,86 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CldImage } from 'next-cloudinary';
+import { useNotifications } from '@/context/NotificationContext';
+import { useUserData } from '@/hooks/useUserData';
+import { useState, useRef } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { 
-  Home, 
-  MessageSquare, 
-  Users, 
-  Sprout, 
-  Calendar, 
+import {
+  Home,
+  MessageSquare,
+  Users,
+  Sprout,
+  Calendar,
+  BellDot,
   ShoppingCart,
   Search,
   ChevronDown
 } from 'lucide-react';
-import { useUserData } from '@/hooks/useUserData';
+
+interface SearchResult {
+  id: string;
+  username: string;
+  name: string;
+  avatar?: string;
+}
 
 export default function Navbar() {
-  const {user} = useUserData();
+  const { user } = useUserData();
+  const { unreadCount } = useNotifications();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
 
   const navItems = [
-    { 
-      name: 'Home', 
-      href: '/dashboard', 
+    {
+      name: 'Home',
+      href: '/dashboard',
       icon: Home,
       active: pathname === '/dashboard'
     },
-    { 
-      name: 'Messages', 
-      href: '/messages', 
+    {
+      name: 'Messages',
+      href: '/messages',
       icon: MessageSquare,
-      active: pathname.startsWith('/messages')
+      active: pathname?.startsWith('/messages')
     },
-    { 
-      name: 'Connections', 
-      href: '/network', 
+    {
+      name: 'Connections',
+      href: '/network',
       icon: Users,
-      active: pathname.startsWith('/network')
+      active: pathname?.startsWith('/network')
     },
-    { 
-      name: 'Marketplace', 
-      href: '/marketplace', 
+    {
+      name: 'Marketplace',
+      href: '/marketplace',
       icon: ShoppingCart,
-      active: pathname.startsWith('/marketplace')
+      active: pathname?.startsWith('/marketplace')
     },
-    { 
-      name: 'Events', 
-      href: '/events', 
+    {
+      name: 'Events',
+      href: '/events',
       icon: Calendar,
-      active: pathname.startsWith('/events')
+      active: pathname?.startsWith('/events')
+    },
+    {
+      name: 'Notification',
+      href: '/notification',
+      icon: BellDot,
+      active: pathname?.startsWith('/notification'),
+      badge: unreadCount > 0 ? unreadCount : null
     },
   ];
 
@@ -69,13 +96,13 @@ export default function Navbar() {
           {/* Left side - Logo and Search */}
           <div className="flex items-center space-x-10">
             {/* Logo with active indicator */}
-            <Link 
-              href="/dashboard" 
+            <Link
+              href="/dashboard"
               className={`flex items-center h-full px-2}`}
             >
               <Sprout className="h-6 w-6 text-green-600 dark:text-green-400" />
               <span className="ml-2 text-xl font-bold text-green-800 dark:text-green-300">
-                SoilSocial
+                Soil Social
               </span>
             </Link>
 
@@ -99,17 +126,23 @@ export default function Navbar() {
 
             {/* Navigation Items with bottom border indicators */}
             {navItems.map((item) => (
-              <Link 
+              <Link
                 key={item.name}
                 href={item.href}
                 className={`h-full flex items-center px-4 ${item.active ? 'border-b-2 border-green-600 dark:border-green-400' : ''}`}
               >
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
                   className={`flex flex-col h-full gap-1  ${item.active ? 'text-green-600 dark:text-green-400' : ''}`}
                 >
                   <item.icon className="h-6 w-6 min-w-6 min-h-6 aspect-square" />
+                  {item.badge && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                      {item.badge}
+                    </span>
+                  )}
+
                   <span className="text-white text-[10px]">{item.name}</span>
                 </Button>
               </Link>

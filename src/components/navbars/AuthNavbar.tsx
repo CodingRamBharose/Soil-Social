@@ -11,7 +11,7 @@ export default function AuthNavbar() {
           <Link href="/" className="flex items-center">
             <Sprout className="h-6 w-6 text-green-700 dark:text-green-600" />
             <span className="ml-2 text-xl font-bold text-green-800 dark:text-green-600">
-              SoilSocial
+              Soil Social
             </span>
           </Link>
           

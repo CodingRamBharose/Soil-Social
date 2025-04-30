@@ -9,7 +9,9 @@ import { usePosts } from "@/hooks/usePost";
 import { Loader2 } from "lucide-react";
 import { PostCard } from "@/components/dashboardComponents/PostCard";
 import { WeatherCard } from "@/components/dashboardComponents/WeatherCard";
-
+import { ConnectionCard } from "@/components/dashboardComponents/ConnectionCard";
+import { ConnectionRequestsCard } from "@/components/dashboardComponents/ConnectionRequestsCard";
+import CropGroupsCard from "@/components/dashboardComponents/CropGroupsCard";
 export default function DashboardPage() {
   const { user, isLoading, error } = useUserData();
   const { posts, loading: postsLoading, error: postsError } = usePosts();
@@ -21,7 +23,7 @@ export default function DashboardPage() {
   if (error || postsError) {
     return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
   }
-  
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6 p-4 max-w-7xl mx-auto">
@@ -48,13 +50,15 @@ export default function DashboardPage() {
             <h2 className="text-xl font-bold">{user.name || 'Farmer'}</h2>
             <p className="text-gray-600">{user.location || 'Farm Location'}</p>
             <p className="text-sm text-gray-500 mt-2">
-              Crops: {user  ?.cropsGrown?.join(', ') || 'Not specified'}
+              Crops: {user?.cropsGrown?.join(', ') || 'Not specified'}
             </p>
             <Button variant="outline" className="mt-4 w-full" asChild>
               <Link href="/profile">View Profile</Link>
             </Button>
           </div>
         </Card>
+
+        <ConnectionRequestsCard />
 
         {/* Connections */}
         <Card>
@@ -67,48 +71,35 @@ export default function DashboardPage() {
             </div>
             <CardDescription>Connect with other farmers</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback>R</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Ram</p>
-                  <p className="text-sm text-gray-500">Wheat Farmer</p>
+          <CardContent className="space-y-3">
+            {user.connections?.length > 0 ? (
+              user.connections.slice(0, 4).map((connection: any) => (
+                <div key={connection._id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      {connection.profilePicture ? (
+                        <AvatarImage src={connection.profilePicture} />
+                      ) : (
+                        <AvatarFallback>
+                          {connection.name?.charAt(0) || 'F'}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{connection.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {connection.cropsGrown?.slice(0, 2).join(', ')}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback>P</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Piyush</p>
-                  <p className="text-sm text-gray-500">Organic Vegetables</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback>R</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Raghav</p>
-                  <p className="text-sm text-gray-500">Organic Fruits</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback>N</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">Nishant</p>
-                  <p className="text-sm text-gray-500">Oilseed Crops</p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full mt-2" asChild>
-                <Link href="/network">Show all</Link>
-              </Button>
-            </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">No connections yet</p>
+            )}
+            <Button variant="outline" className="w-full mt-2" asChild>
+              <Link href="/network">Show all</Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -116,21 +107,9 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Crop Groups</CardTitle>
-            <CardDescription>Join farming communities</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="bg-gray-700 p-2 rounded-lg w-full flex items-center justify-around">
-                <span className="font-medium">🌾 Wheat Farmers</span>
-                <Button className='bg-transparent text-green-300 text-md hover:bg-transparent hover:border-none cursor-pointer hover:scale-125 ' >Join</Button>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-gray-700 p-2 rounded-lg w-full flex items-center justify-around">
-                <span className="font-medium">🥬 Organic Farmers</span>
-                <Button className='bg-transparent text-green-300 text-md hover:bg-transparent hover:border-none cursor-pointer hover:scale-125 '>Join</Button>
-              </div>
-            </div>
+          <CardContent className="p-1">
+            <CropGroupsCard />
           </CardContent>
         </Card>
       </div>
@@ -177,8 +156,8 @@ export default function DashboardPage() {
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
             ) : posts.length > 0 ? (
-              posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+              posts.map((post,index) => (
+                <PostCard key={index} post={post} />
               ))
             ) : (
               <div className="text-center py-8">
