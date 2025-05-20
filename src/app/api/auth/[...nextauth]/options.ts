@@ -46,7 +46,7 @@ export const options: NextAuthOptions = {
           bio: user.bio,
           cropsGrown: user.cropsGrown,
           farmingTechniques: user.farmingTechniques,
-          
+
         };
       },
     }),
@@ -88,12 +88,13 @@ export const options: NextAuthOptions = {
       if (account?.provider === "credentials") {
         return true;
       }
-      
+
       if (account?.provider === "google") {
         await dbConnect();
         const existingUser = await UserModel.findOne({ email: user.email });
-        
+
         if (existingUser) {
+          // If user exists, update the user object with database values
           user.id = existingUser.id.toString();
           user.isVerified = existingUser.isVerified;
           user.profilePicture = existingUser.profilePicture;
@@ -101,6 +102,47 @@ export const options: NextAuthOptions = {
           user.bio = existingUser.bio;
           user.cropsGrown = existingUser.cropsGrown;
           user.farmingTechniques = existingUser.farmingTechniques;
+        } else {
+          // If user doesn't exist, create a new user record
+          try {
+            // Generate random verification code (not needed for Google auth but required by schema)
+            const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const verifyCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+            // Create a random password (not used for Google auth but required by schema)
+            const randomPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+            // Create new user
+            const newUser = await UserModel.create({
+              name: user.name || profile?.name || 'User',
+              email: user.email,
+              password: hashedPassword,
+              verifyCode,
+              verifyCodeExpiry,
+              isVerified: true, 
+              profilePicture: '',
+              location: '',
+              bio: '',
+              cropsGrown: [],
+              farmingTechniques: [],
+              connections: [],
+            });
+
+            // Update user object with the new user's ID and properties
+            user.id = newUser._id.toString();
+            user.isVerified = true;
+            user.profilePicture = newUser.profilePicture;
+            user.location = newUser.location;
+            user.bio = newUser.bio;
+            user.cropsGrown = newUser.cropsGrown;
+            user.farmingTechniques = newUser.farmingTechniques;
+
+            console.log('Created new user from Google sign-in:', newUser.email);
+          } catch (error) {
+            console.error('Error creating user from Google sign-in:', error);
+            return false; // Prevent sign-in if user creation fails
+          }
         }
         return true;
       }

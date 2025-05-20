@@ -18,6 +18,30 @@ export async function middleware(request: NextRequest) {
   if (!token && url.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
+  if (!token && url.pathname.startsWith('/profile')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/messages')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/network')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/marketplace')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/events')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/notification')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/groups')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
+  if (!token && url.pathname.startsWith('/post')) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
+  }
 
   // Allow verify routes regardless of auth state
   if (url.pathname.startsWith('/verify')) {
@@ -32,6 +56,14 @@ export const config = {
     '/sign-in',
     '/sign-up',
     '/',
-    '/dashboard/:path*'
+    '/dashboard/:path*',
+    '/profile/:path*',
+    '/messages/:path*',
+    '/network/:path*', 
+    '/marketplace/:path*',
+    '/events/:path*',
+    '/notification/:path*',
+    '/groups/:path*',
+    '/post/:path*',
   ]
 }

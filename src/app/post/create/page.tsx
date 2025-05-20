@@ -8,6 +8,40 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Loader2, Image as ImageIcon, Video } from "lucide-react";
 import { useUserData } from "@/hooks/useUserData";
+// Add these imports for the Select and Checkbox components
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+// Add crop options
+const crops = [
+  { value: "wheat", label: "Wheat" },
+  { value: "rice", label: "Rice" },
+  { value: "corn", label: "Corn" },
+  { value: "soybean", label: "Soybean" },
+  { value: "cotton", label: "Cotton" },
+  { value: "sugarcane", label: "Sugarcane" },
+  { value: "vegetables", label: "Vegetables" },
+  { value: "fruits", label: "Fruits" },
+];
+
+// Add tag options
+const techniques = [
+  { value: "organic", label: "Organic Farming" },
+  { value: "permaculture", label: "Permaculture" },
+  { value: "hydroponics", label: "Hydroponics" },
+  { value: "precision", label: "Precision Agriculture" },
+  { value: "sustainable", label: "Sustainable" },
+  { value: "pesticide-free", label: "Pesticide Free" },
+  { value: "fertilizer", label: "Fertilizer" },
+  { value: "soil-health", label: "Soil Health" },
+];
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -22,6 +56,8 @@ export default function CreatePostPage() {
     cropType: "",
     tags: "",
   });
+  // Add state for selected tags
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'images' | 'videos') => {
     if (!e.target.files?.length || !user) return;
@@ -56,11 +92,6 @@ export default function CreatePostPage() {
 
     setIsLoading(true);
     try {
-      const tagsArray = formData.tags
-        .split(",")
-        .map(tag => tag.trim())
-        .filter(Boolean);
-
       const response = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,7 +100,7 @@ export default function CreatePostPage() {
           images: media.images,
           videos: media.videos,
           cropType: formData.cropType,
-          tags: tagsArray,
+          tags: selectedTags, // Use the selected tags array
           author: user._id,
         }),
       });
@@ -182,22 +213,60 @@ export default function CreatePostPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="cropType">Crop Type</Label>
-                <Input
-                  id="cropType"
+                {/* Crop type dropdown */}
+                <Select
                   value={formData.cropType}
-                  onChange={(e) => setFormData({ ...formData, cropType: e.target.value })}
-                  placeholder="e.g. Wheat, Corn"
-                />
+                  onValueChange={(value) => setFormData({ ...formData, cropType: value })}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select crop type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {crops.map((crop) => (
+                      <SelectItem key={crop.value} value={crop.value}>
+                        {crop.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tags">Tags (comma separated)</Label>
-                <Input
-                  id="tags"
-                  value={formData.tags}
-                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                  placeholder="e.g. organic, harvest, irrigation"
-                />
+                <Label htmlFor="tags">Tags</Label>
+                {/* Tags dropdown with checkboxes */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                      disabled={isLoading}
+                    >
+                      {selectedTags.length > 0
+                        ? `${selectedTags.length} selected`
+                        : "Select tags"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] p-2">
+                    <div className="space-y-2">
+                      {techniques.map((tech) => (
+                        <div key={tech.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`tech-${tech.value}`}
+                            checked={selectedTags.includes(tech.value)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? setSelectedTags([...selectedTags, tech.value])
+                                : setSelectedTags(
+                                    selectedTags.filter((v) => v !== tech.value)
+                                  );
+                            }}
+                          />
+                          <label htmlFor={`tech-${tech.value}`}>{tech.label}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 

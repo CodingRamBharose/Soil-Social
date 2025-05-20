@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/config/dbConnect";
 import PostModel from "@/models/Post";
+import UserModel from "@/models/User";
 import mongoose from "mongoose";
 
 // GET: Fetch a specific post
@@ -36,6 +37,52 @@ export async function GET(
     return NextResponse.json(post);
   } catch (error) {
     console.error("Error fetching post:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: Delete a post
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  await connectDB();
+  const session = await getServerSession();
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+      return NextResponse.json(
+        { error: "Invalid post ID format" },
+        { status: 400 }
+      );
+    }
+
+    const user = await UserModel.findOne({ email: session.user.email });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const post = await PostModel.findById(params.id);
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    // Check if the user is the author of the post
+    if (post.author.toString() !== user._id.toString()) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    await PostModel.findByIdAndDelete(params.id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting post:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

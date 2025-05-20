@@ -51,7 +51,7 @@ export default function GroupsPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to create group. Please try again.",
+        description: "All fields are required.",
         variant: "destructive",
       });
     }

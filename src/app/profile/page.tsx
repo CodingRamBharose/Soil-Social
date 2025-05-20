@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CldImage } from "next-cloudinary";
-import { Edit2, Camera } from "lucide-react";
+import { Edit2, Camera, Loader2 } from "lucide-react";
 import { ProfileForm } from "@/components/ProfileForm";
 import { useUserData } from "@/hooks/useUserData";
+import { useUserPosts } from "@/hooks/useUserPosts";
+import { UserPostCard } from "@/components/profileComponents/UserPostCard";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const { user, isLoading, error, refreshUserData } = useUserData();
+  const { posts, loading: postsLoading, error: postsError, deletePost } = useUserPosts(user?._id);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !user) return;
@@ -60,7 +63,7 @@ export default function ProfilePage() {
       <Card>
         <CardHeader className="relative p-0">
           <div className="h-48 bg-green-100 rounded-t-lg"></div>
-          
+
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 px-6 pb-6 mt-[-3rem]">
             <div className="relative group">
               {user.profilePicture ? (
@@ -89,7 +92,7 @@ export default function ProfilePage() {
                 />
               </label>
             </div>
-            
+
             <div className="flex-1 flex justify-between items-start sm:items-end">
               <div className="space-y-2">
                 <CardTitle className="text-2xl">{user.name}</CardTitle>
@@ -97,7 +100,7 @@ export default function ProfilePage() {
                   🌱 {user.location || "Farm Location"}
                 </p>
               </div>
-              
+
               <Button
                 variant="outline"
                 size="icon"
@@ -113,8 +116,8 @@ export default function ProfilePage() {
 
         <CardContent className="space-y-6 pt-6">
           {isEditing ? (
-            <ProfileForm 
-              user={user} 
+            <ProfileForm
+              user={user}
               onSuccess={async () => {
                 await refreshUserData();
                 setIsEditing(false);
@@ -160,6 +163,35 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* User Posts Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Your Posts</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {postsLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : postsError ? (
+            <div className="text-center py-8 text-red-500">
+              Error loading posts: {postsError}
+            </div>
+          ) : posts.length > 0 ? (
+            posts.map((post) => (
+              <UserPostCard key={post._id} post={post} onDelete={deletePost} />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p>You haven't created any posts yet.</p>
+              <Button asChild className="mt-4">
+                <a href="/post/create">Create Post</a>
+              </Button>
             </div>
           )}
         </CardContent>

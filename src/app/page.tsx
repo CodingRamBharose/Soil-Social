@@ -30,7 +30,7 @@ export default function Page() {
               By clicking Continue to join or sign in, you agree to SoilSocial <span className='text-blue-500 font-semibold'>User Agreement, Privacy Policy</span>, and <span className='text-blue-500 font-semibold'> Cookie Policy.</span>.
             </p>
             <p className='mt-3 text-black'>
-              New to LinkedIn? <span className='text-blue-500 font-semibold hover:border-b-1 border-blue-500'>
+              New to SoilSocial? <span className='text-blue-500 font-semibold hover:border-b-1 border-blue-500'>
                 <Link href="/sign-in">
                   Sign In
                 </Link></span>

@@ -80,13 +80,13 @@ export default function Navbar() {
       icon: Calendar,
       active: pathname?.startsWith('/events')
     },
-    {
-      name: 'Notification',
-      href: '/notification',
-      icon: BellDot,
-      active: pathname?.startsWith('/notification'),
-      badge: unreadCount > 0 ? unreadCount : null
-    },
+    // {
+    //   name: 'Notification',
+    //   href: '/notification',
+    //   icon: BellDot,
+    //   active: pathname?.startsWith('/notification'),
+    //   badge: unreadCount > 0 ? unreadCount : null
+    // },
   ];
 
   return (
@@ -137,11 +137,11 @@ export default function Navbar() {
                   className={`flex flex-col h-full gap-1  ${item.active ? 'text-green-600 dark:text-green-400' : ''}`}
                 >
                   <item.icon className="h-6 w-6 min-w-6 min-h-6 aspect-square" />
-                  {item.badge && (
+                  {/* {item.badge && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                       {item.badge}
                     </span>
-                  )}
+                  )} */}
 
                   <span className="text-white text-[10px]">{item.name}</span>
                 </Button>
