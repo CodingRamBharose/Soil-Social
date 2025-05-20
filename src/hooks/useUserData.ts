@@ -2,27 +2,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { User } from "next-auth";
-
-interface ExtendedUserData {
-  _id?: string;
-  connections?: Array<{
-    _id: string;
-    name: string;
-    profilePicture?: string;
-  }>;
-  connectionRequests?: {
-    sent: string[];
-    received: string[];
-  };
-  savedPosts?: string[];
-  eventsAttending?: string[];
-  [key: string]: any; // For any additional fields that might be returned
-}
 
 export function useUserData() {
   const { data: session, update: updateSession } = useSession();
-  const [userData, setUserData] = useState<ExtendedUserData | null>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,11 +14,11 @@ export function useUserData() {
       setIsLoading(true);
       setError(null);
       const res = await fetch('/api/profile');
-
+      
       if (!res.ok) {
         throw new Error('Failed to fetch user data');
       }
-
+      
       const data = await res.json();
       setUserData(data);
     } catch (err) {
@@ -62,10 +45,10 @@ export function useUserData() {
     await updateSession();
   };
 
-  return {
-    user,
-    isLoading,
-    error,
+  return { 
+    user, 
+    isLoading, 
+    error, 
     refreshUserData,
     updateSession
   };

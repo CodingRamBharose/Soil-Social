@@ -12,7 +12,7 @@ interface MongooseCache {
 }
 
 declare global {
-  let mongoose: MongooseCache;
+  var mongoose: MongooseCache;
 }
 
 let cached = global.mongoose;
@@ -40,4 +40,4 @@ export async function connectToDatabase() {
   }
 
   return cached.conn;
-}
+} 

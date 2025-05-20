@@ -18,9 +18,9 @@ export function useUserPosts(userId: string | undefined) {
         if (!response.ok) throw new Error("Failed to fetch user posts");
         const data = await response.json();
         setPosts(data);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error("Error fetching user posts:", err);
-        setError(err instanceof Error ? err.message : "Unknown error");
+        setError(err.message || "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -34,11 +34,11 @@ export function useUserPosts(userId: string | undefined) {
       const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
       });
-
+      
       if (!response.ok) {
         throw new Error('Failed to delete post');
       }
-
+      
       // Remove the deleted post from the state
       setPosts(posts.filter(post => post._id !== postId));
       return true;

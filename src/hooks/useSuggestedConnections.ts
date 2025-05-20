@@ -1,17 +1,9 @@
 import { useEffect, useState } from "react";
 import { useUserData } from "./useUserData";
 
-interface SuggestedUser {
-  _id: string;
-  name: string;
-  profilePicture?: string;
-  cropsGrown?: string[];
-  location?: string;
-}
-
 export function useSuggestedConnections() {
   const { user } = useUserData();
-  const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
+  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
