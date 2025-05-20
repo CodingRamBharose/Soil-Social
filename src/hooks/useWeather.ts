@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 
+interface WeatherData {
+  temp: number;
+  feels_like: number;
+  condition: string;
+  icon: string;
+  location: string;
+  humidity: number;
+  wind: number;
+}
+
 export function useWeather(location: string | null) {
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

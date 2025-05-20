@@ -53,7 +53,7 @@ const eventSchema = new Schema<IEvent>({
 eventSchema.index({ location: '2dsphere' });
 
 // Check if the model exists before creating it
-let Event = ((): ReturnType<typeof model<IEvent>> => {
+const Event = ((): ReturnType<typeof model<IEvent>> => {
   try {
     return model<IEvent>('Event');
   } catch {
