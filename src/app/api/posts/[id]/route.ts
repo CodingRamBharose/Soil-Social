@@ -8,19 +8,20 @@ import mongoose from "mongoose";
 // GET: Fetch a specific post
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid post ID format" },
         { status: 400 }
       );
     }
 
-    const post = await PostModel.findById(params.id)
+    const post = await PostModel.findById(id)
       .populate({
         path: 'author',
         select: 'name profilePicture cropsGrown farmingTechniques location'
@@ -47,7 +48,7 @@ export async function GET(
 // DELETE: Delete a post
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const session = await getServerSession();
@@ -57,7 +58,8 @@ export async function DELETE(
   }
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid post ID format" },
         { status: 400 }
@@ -69,7 +71,7 @@ export async function DELETE(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const post = await PostModel.findById(params.id);
+    const post = await PostModel.findById(id);
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
@@ -79,7 +81,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    await PostModel.findByIdAndDelete(params.id);
+    await PostModel.findByIdAndDelete(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting post:", error);

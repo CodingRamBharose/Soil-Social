@@ -8,11 +8,12 @@ import mongoose from "mongoose";
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDB();
 
+    const { userId } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -22,7 +23,7 @@ export async function GET(
     }
 
     // Get the other user's information
-    const otherUser = await UserModel.findById(params.userId).select(
+    const otherUser = await UserModel.findById(userId).select(
       "name profilePicture"
     );
     if (!otherUser) {
@@ -37,10 +38,10 @@ export async function GET(
       $or: [
         {
           sender: new mongoose.Types.ObjectId(session.user.id),
-          receiver: new mongoose.Types.ObjectId(params.userId),
+          receiver: new mongoose.Types.ObjectId(userId),
         },
         {
-          sender: new mongoose.Types.ObjectId(params.userId),
+          sender: new mongoose.Types.ObjectId(userId),
           receiver: new mongoose.Types.ObjectId(session.user.id),
         },
       ],
@@ -52,7 +53,7 @@ export async function GET(
     // Mark messages as read
     await MessageModel.updateMany(
       {
-        sender: new mongoose.Types.ObjectId(params.userId),
+        sender: new mongoose.Types.ObjectId(userId),
         receiver: new mongoose.Types.ObjectId(session.user.id),
         read: false,
       },
@@ -78,11 +79,12 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     await connectDB();
 
+    const { userId } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -101,7 +103,7 @@ export async function POST(
 
     const message = await MessageModel.create({
       sender: new mongoose.Types.ObjectId(session.user.id),
-      receiver: new mongoose.Types.ObjectId(params.userId),
+      receiver: new mongoose.Types.ObjectId(userId),
       content,
       read: false,
     });
@@ -118,4 +120,4 @@ export async function POST(
       { status: 500 }
     );
   }
-} 
+}

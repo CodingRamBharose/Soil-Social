@@ -8,11 +8,12 @@ import { createNotification } from "@/lib/notifications";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -24,7 +25,7 @@ export async function POST(
     // Convert string ID to ObjectId
     let targetUserId: Types.ObjectId;
     try {
-      targetUserId = new Types.ObjectId(params.id);
+      targetUserId = new Types.ObjectId(id);
     } catch {
       return NextResponse.json(
         { error: "Invalid user ID format" },

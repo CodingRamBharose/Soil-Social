@@ -16,19 +16,20 @@ const CommentSchema = z.object({
 // GET: Fetch comments for a post
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid post ID format" },
         { status: 400 }
       );
     }
 
-    const comments = await CommentModel.find({ post: params.id })
+    const comments = await CommentModel.find({ post: id })
       .sort({ createdAt: -1 })
       .populate({
         path: 'author',
@@ -49,7 +50,7 @@ export async function GET(
 // POST: Add a comment to a post
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const session = await getServerSession();
@@ -59,7 +60,8 @@ export async function POST(
   }
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid post ID format" },
         { status: 400 }
@@ -68,7 +70,7 @@ export async function POST(
 
     const [user, post] = await Promise.all([
       UserModel.findOne({ email: session.user.email }),
-      PostModel.findById(params.id).populate('author', 'email')
+      PostModel.findById(id).populate('author', 'email')
     ]);
 
     if (!user) {
@@ -80,10 +82,10 @@ export async function POST(
     }
 
     const body = await req.json();
-    
+
     try {
       const validatedData = CommentSchema.parse(body);
-      
+
       // Create the comment
       const comment = await CommentModel.create({
         content: validatedData.content,
@@ -93,7 +95,7 @@ export async function POST(
 
       // Add comment reference to the post
       await PostModel.findByIdAndUpdate(
-        params.id,
+        id,
         { $addToSet: { comments: comment._id } }
       );
 

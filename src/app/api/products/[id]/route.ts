@@ -6,12 +6,13 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { db } = await connectToDatabase();
     const product = await db.collection("products").findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
 
     if (!product) {
@@ -34,7 +35,7 @@ export async function GET(
   } catch (error: unknown) {
     console.error("Product fetch error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch product" },
+      { success: false, error: (error as Error).message || "Failed to fetch product" },
       { status: 500 }
     );
   }
@@ -42,9 +43,10 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json(
@@ -55,7 +57,7 @@ export async function PATCH(
 
     const { db } = await connectToDatabase();
     const product = await db.collection("products").findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
 
     if (!product) {
@@ -74,7 +76,7 @@ export async function PATCH(
 
     const updates = await req.json();
     const updatedProduct = await db.collection("products").findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: { ...updates, updatedAt: new Date() } },
       { returnDocument: "after" }
     );
@@ -86,7 +88,7 @@ export async function PATCH(
   } catch (error: unknown) {
     console.error("Product update error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to update product" },
+      { success: false, error: (error as Error).message || "Failed to update product" },
       { status: 500 }
     );
   }
@@ -94,9 +96,10 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json(
@@ -107,7 +110,7 @@ export async function DELETE(
 
     const { db } = await connectToDatabase();
     const product = await db.collection("products").findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
 
     if (!product) {
@@ -125,15 +128,15 @@ export async function DELETE(
     }
 
     await db.collection("products").deleteOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Product deletion error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete product" },
+      { success: false, error: (error as Error).message || "Failed to delete product" },
       { status: 500 }
     );
   }
-} 
+}

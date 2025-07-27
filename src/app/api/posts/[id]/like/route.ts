@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 // POST: Like or unlike a post
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const session = await getServerSession();
@@ -19,7 +19,8 @@ export async function POST(
   }
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    const { id } = await params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid post ID format" },
         { status: 400 }
@@ -28,7 +29,7 @@ export async function POST(
 
     const [user, post] = await Promise.all([
       UserModel.findOne({ email: session.user.email }),
-      PostModel.findById(params.id).populate('author', 'email')
+      PostModel.findById(id).populate('author', 'email')
     ]);
 
     if (!user) {
@@ -40,23 +41,23 @@ export async function POST(
     }
 
     // Check if user already liked the post
-    const alreadyLiked = post.likes.some(likeId => 
+    const alreadyLiked = post.likes.some(likeId =>
       likeId.toString() === user._id.toString()
     );
 
     let updatedPost;
-    
+
     if (alreadyLiked) {
       // Unlike the post
       updatedPost = await PostModel.findByIdAndUpdate(
-        params.id,
+        id,
         { $pull: { likes: user._id } },
         { new: true }
       );
     } else {
       // Like the post
       updatedPost = await PostModel.findByIdAndUpdate(
-        params.id,
+        id,
         { $addToSet: { likes: user._id } },
         { new: true }
       );
