@@ -3,13 +3,13 @@ import { connectToDatabase } from "@/lib/db";
 import { Event } from "@/models/event";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
-import { Types } from "mongoose";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(options);
     if (!session) {
       return NextResponse.json(
@@ -20,7 +20,7 @@ export async function POST(
 
     await connectToDatabase();
 
-    const event = await Event.findById(params.id);
+    const event = await Event.findById(id);
     if (!event) {
       return NextResponse.json(
         { error: "Event not found" },
@@ -29,7 +29,7 @@ export async function POST(
     }
 
     // Check if user is already attending
-    if (event.attendees.includes(session.user.id)) {
+    if (event.attendees.some((attendeeId: any) => attendeeId.toString() === session.user.id)) {
       return NextResponse.json(
         { error: "You are already attending this event" },
         { status: 400 }
@@ -45,7 +45,7 @@ export async function POST(
     }
 
     // Add user to attendees
-    event.attendees.push(session.user.id);
+    event.attendees.push(session.user.id as any);
     await event.save();
 
     return NextResponse.json({ message: "RSVP successful" });
@@ -60,9 +60,10 @@ export async function POST(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(options);
     if (!session) {
       return NextResponse.json(
@@ -73,7 +74,7 @@ export async function DELETE(
 
     await connectToDatabase();
 
-    const event = await Event.findById(params.id);
+    const event = await Event.findById(id);
     if (!event) {
       return NextResponse.json(
         { error: "Event not found" },
@@ -83,7 +84,7 @@ export async function DELETE(
 
     // Remove user from attendees
     event.attendees = event.attendees.filter(
-      (attendeeId: Types.ObjectId) => attendeeId.toString() !== session.user.id
+      (attendeeId: any) => attendeeId.toString() !== session.user.id
     );
     await event.save();
 
@@ -95,4 +96,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}
