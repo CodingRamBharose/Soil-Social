@@ -72,9 +72,9 @@ export default function DashboardPage() {
             <CardDescription>Connect with other farmers</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {user.connections?.length > 0 ? (
-              user.connections.slice(0, 4).map((connection: { _id: string; name: string; profilePicture?: string }) => (
-                <div key={connection._id} className="flex items-center justify-between">
+            {(user.connections?.length || 0) > 0 ? (
+              user.connections?.slice(0, 4).map((connection: any) => (
+                <div key={connection._id || connection} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar>
                       {connection.profilePicture ? (
@@ -86,9 +86,9 @@ export default function DashboardPage() {
                       )}
                     </Avatar>
                     <div>
-                      <p className="font-medium">{connection.name}</p>
+                      <p className="font-medium">{connection.name || 'Connection'}</p>
                       <p className="text-sm text-gray-500">
-                        {connection.cropsGrown?.slice(0, 2).join(', ')}
+                        {connection.cropsGrown?.slice(0, 2).join(', ') || 'Farmer'}
                       </p>
                     </div>
                   </div>

@@ -184,7 +184,7 @@ export default function ProfilePage() {
             </div>
           ) : posts.length > 0 ? (
             posts.map((post) => (
-              <UserPostCard key={post._id} post={post} onDelete={deletePost} />
+              <UserPostCard key={post._id || post.id} post={post as any} onDelete={deletePost} />
             ))
           ) : (
             <div className="text-center py-8">

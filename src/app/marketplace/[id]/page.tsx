@@ -82,9 +82,9 @@ export default function ProductDetailPage() {
               <div>
                 <h3 className="text-2xl font-bold">
                   ₹{product.price.toLocaleString('en-IN')}
-                  {product.category === "food" && product.unit && ` per ${product.unit}`}
+                  {product.category === "food" && product.unit && ` per ${typeof product.unit === 'string' ? product.unit : product.unit.symbol || product.unit.name}`}
                 </h3>
-                <p className="text-sm text-gray-500">Quantity: {product.quantity} {product.unit || ''}</p>
+                <p className="text-sm text-gray-500">Quantity: {product.quantity} {typeof product.unit === 'string' ? product.unit : product.unit?.symbol || product.unit?.name || ''}</p>
               </div>
 
               <div>

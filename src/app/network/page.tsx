@@ -28,8 +28,8 @@ export default function NetworkPage() {
       setLoading(prev => ({ ...prev, suggestions: true }));
       const response = await fetch('/api/users/suggested');
       const data = await response.json();
-      setSuggestedUsers(data.filter((s: SuggestedUser) => 
-        !user?.connections?.some(c => c._id === s._id)
+      setSuggestedUsers(data.filter((s: SuggestedUser) =>
+        !user?.connections?.some((c: any) => (typeof c === 'string' ? c : c._id) === s._id)
       ));
     } finally {
       setLoading(prev => ({ ...prev, suggestions: false }));
@@ -62,9 +62,9 @@ export default function NetworkPage() {
               <CardTitle>Your Farming Network ({user.connections?.length || 0})</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {user.connections?.length > 0 ? (
-                user.connections.map((connection: { _id: string; name: string; profilePicture?: string }) => (
-                  <ConnectionCard key={connection._id} user={{ ...connection, id: connection._id }} />
+              {(user.connections?.length || 0) > 0 ? (
+                user.connections?.map((connection: any) => (
+                  <ConnectionCard key={connection._id || connection} user={{ ...connection, id: connection._id || connection }} />
                 ))
               ) : (
                 <div className="text-center py-8 space-y-2">

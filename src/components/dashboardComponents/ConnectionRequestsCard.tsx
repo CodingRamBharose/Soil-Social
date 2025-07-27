@@ -23,7 +23,7 @@ export function ConnectionRequestsCard() {
         <CardDescription>Pending requests from other farmers</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {user.connectionRequests.received.map((request: { _id: string; name: string; profilePicture?: string; cropsGrown?: string[] }) => (
+        {user.connectionRequests?.received?.map((request: any) => (
           <div key={request._id} className="flex items-center justify-between p-2">
             <div className="flex items-center gap-3">
               <Avatar>

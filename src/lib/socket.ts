@@ -1,7 +1,6 @@
 import { Server as NetServer } from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { NextApiResponse } from 'next';
-import { Notification } from '@/models/Notification';
 
 export type NextApiResponseWithSocket = NextApiResponse & {
   socket: {

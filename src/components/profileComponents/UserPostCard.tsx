@@ -124,9 +124,9 @@ export function UserPostCard({ post, onDelete }: { post: { _id: string; content:
         <div className="w-full">
           <p>{post.content}</p>
           {/* Display images if they exist */}
-          {post.images?.length > 0 && (
+          {(post.images?.length || 0) > 0 && (
             <div className="grid grid-cols-2 gap-2 mt-3">
-              {post.images.map((image: string) => (
+              {post.images?.map((image: string) => (
                 <div key={image} className="relative aspect-square">
                   <CldImage
                     src={image}
@@ -140,9 +140,9 @@ export function UserPostCard({ post, onDelete }: { post: { _id: string; content:
           )}
 
           {/* Display tags if they exist */}
-          {post.tags?.length > 0 && (
+          {(post as any).tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {post.tags.map((tag: string) => (
+              {(post as any).tags?.map((tag: string) => (
                 <span
                   key={tag}
                   className="text-xs px-2 py-1 rounded-full"

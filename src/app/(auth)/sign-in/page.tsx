@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
 
 export default function SignInPage() {
   const { toast } = useToast();
@@ -64,7 +65,9 @@ export default function SignInPage() {
       </p>
     </div>
 
-    <GoogleSignInButton width={100} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <GoogleSignInButton width={100} />
+    </Suspense>
 
     <div className="flex items-center gap-2">
       <Separator className="flex-1 dark:bg-gray-600" />

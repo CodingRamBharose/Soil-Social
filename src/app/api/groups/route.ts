@@ -59,13 +59,13 @@ export async function GET() {
       .populate('members.user', 'name');
 
     // Get groups where the user is a member
-    const joinedGroups = groups.filter(group => 
-      group.members.some(member => member.user._id.toString() === session.user.id)
+    const joinedGroups = groups.filter(group =>
+      group.members.some((member: any) => member.user._id.toString() === session.user.id)
     );
 
     // Get groups where the user is not a member
-    const availableGroups = groups.filter(group => 
-      !group.members.some(member => member.user._id.toString() === session.user.id)
+    const availableGroups = groups.filter(group =>
+      !group.members.some((member: any) => member.user._id.toString() === session.user.id)
     );
 
     return NextResponse.json({

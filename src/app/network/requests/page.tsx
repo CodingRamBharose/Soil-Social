@@ -31,8 +31,8 @@ export default function ConnectionRequestsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {user?.connectionRequests?.received?.length > 0 ? (
-            user.connectionRequests.received.map((request: { _id: string; name: string; profilePicture?: string; location?: string; bio?: string }) => (
+          {(user?.connectionRequests?.received?.length || 0) > 0 ? (
+            user.connectionRequests?.received?.map((request: any) => (
               <div key={request._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <ConnectionCard user={request} />
                 <Button

@@ -121,9 +121,9 @@ export function ProfileForm({
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button variant="outline" className="w-full justify-start">
-                      {field.value.length > 0 ? (
+                      {(field.value?.length || 0) > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                          {field.value.map((value) => (
+                          {field.value?.map((value) => (
                             <Badge key={value} variant="secondary">
                               {crops.find((c) => c.value === value)?.label}
                             </Badge>
@@ -141,12 +141,12 @@ export function ProfileForm({
                       <div key={crop.value} className="flex items-center space-x-2">
                         <Checkbox
                           id={`crop-${crop.value}`}
-                          checked={field.value.includes(crop.value)}
+                          checked={field.value?.includes(crop.value) || false}
                           onCheckedChange={(checked) => {
                             return checked
-                              ? field.onChange([...field.value, crop.value])
+                              ? field.onChange([...(field.value || []), crop.value])
                               : field.onChange(
-                                  field.value.filter((v) => v !== crop.value)
+                                  (field.value || []).filter((v) => v !== crop.value)
                                 );
                           }}
                         />
@@ -171,9 +171,9 @@ export function ProfileForm({
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button variant="outline" className="w-full justify-start">
-                      {field.value.length > 0 ? (
+                      {(field.value?.length || 0) > 0 ? (
                         <div className="flex flex-wrap gap-1">
-                          {field.value.map((value) => (
+                          {field.value?.map((value) => (
                             <Badge key={value} variant="secondary">
                               {techniques.find((t) => t.value === value)?.label}
                             </Badge>
@@ -191,12 +191,12 @@ export function ProfileForm({
                       <div key={tech.value} className="flex items-center space-x-2">
                         <Checkbox
                           id={`tech-${tech.value}`}
-                          checked={field.value.includes(tech.value)}
+                          checked={field.value?.includes(tech.value) || false}
                           onCheckedChange={(checked) => {
                             return checked
-                              ? field.onChange([...field.value, tech.value])
+                              ? field.onChange([...(field.value || []), tech.value])
                               : field.onChange(
-                                  field.value.filter((v) => v !== tech.value)
+                                  (field.value || []).filter((v) => v !== tech.value)
                                 );
                           }}
                         />

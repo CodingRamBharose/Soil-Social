@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { SafeUser } from "@/types/User";
+import { SafeUser } from "@/types/user";
 
 export function useUserData() {
   const { data: session, update: updateSession } = useSession();

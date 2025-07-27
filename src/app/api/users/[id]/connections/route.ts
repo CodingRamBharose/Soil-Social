@@ -54,7 +54,7 @@ export async function POST(
     }
 
     // Check if already connected
-    if (currentUser.connections.some(connId => connId.equals(targetUser._id))) {
+    if (currentUser.connections?.some(connId => connId.equals(targetUser._id))) {
       return NextResponse.json(
         { error: "Already connected with this user" },
         { status: 400 }
@@ -62,7 +62,7 @@ export async function POST(
     }
 
     // Check if request already sent
-    if (currentUser.connectionRequests.sent.some(reqId => reqId.equals(targetUser._id))) {
+    if (currentUser.connectionRequests?.sent?.some(reqId => reqId.equals(targetUser._id))) {
       return NextResponse.json(
         { error: "Request already sent to this user" },
         { status: 400 }

@@ -2,6 +2,7 @@ import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Page() {
   return (
@@ -19,7 +20,9 @@ export default function Page() {
             knowledge, resources, and grow together.
           </p>
           <div className="flex flex-col gap-4 items-center">
-            <GoogleSignInButton width={70}/>
+            <Suspense fallback={<div>Loading...</div>}>
+              <GoogleSignInButton width={70}/>
+            </Suspense>
             <Link href="/sign-up" className="w-[70%]">
               <Button className="text-black h-12 w-full rounded-full flex justify-center items-center font-medium gap-2.5 border-2 border-black bg-white cursor-pointer transition-all duration-200 ease-in-out hover:border-[#2d79f3]" size="lg">Get Started</Button>
             </Link>

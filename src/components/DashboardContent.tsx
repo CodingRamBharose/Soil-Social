@@ -59,7 +59,7 @@ export default function DashboardContent() {
         <CropGroupsCard />
 
         {/* Connections */}
-        <ConnectionCard user={user} />
+        <ConnectionCard user={user as any} />
       </div>
 
       {/* Main Content */}
@@ -104,7 +104,7 @@ export default function DashboardContent() {
 
       {/* Right Sidebar */}
       <div className="space-y-4">
-        <WeatherCard location={user.location} />
+        <WeatherCard location={user.location || null} />
         <ConnectionRequestsCard />
       </div>
     </div>

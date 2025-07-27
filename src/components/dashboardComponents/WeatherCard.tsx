@@ -136,9 +136,9 @@ export function WeatherCard({ location }: { location: string | null }) {
                 <div key={time} className="flex flex-col items-center">
                   <p>{time}</p>
                   <p className="text-xl">
-                    {WEATHER_ICONS[weather.icon] || '☀️'}
+                    {WEATHER_ICONS[weather.icon as keyof typeof WEATHER_ICONS] || '☀️'}
                   </p>
-                  <p>{weather.temp + index - 2}°</p>
+                  <p>{(weather.temp as number) + index - 2}°</p>
                 </div>
               ))}
             </div>

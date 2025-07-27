@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUserData } from "./useUserData";
-import { SafeUser } from "@/types/User";
+import { SafeUser } from "@/types/user";
 
 export function useSuggestedConnections() {
   const { user } = useUserData();
