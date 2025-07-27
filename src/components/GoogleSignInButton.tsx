@@ -12,7 +12,7 @@ interface GoogleSignInButtonProps {
 
 export function GoogleSignInButton({ width }: GoogleSignInButtonProps) {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
   
 
