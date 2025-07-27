@@ -17,10 +17,14 @@ export const options: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: { email: string; password: string } | undefined): Promise<unknown> {
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email and password are required');
+        }
+
         await dbConnect();
 
-        const user = await UserModel.findOne({ email: credentials?.email });
+        const user = await UserModel.findOne({ email: credentials.email });
 
         if (!user) {
           throw new Error('No user found with this email');
