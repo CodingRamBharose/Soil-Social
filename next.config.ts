@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
-    serverComponentsExternalPackages: ['cloudinary'],
   },
+  serverExternalPackages: ['cloudinary'],
   images: {
     domains: ['res.cloudinary.com'],
   },
