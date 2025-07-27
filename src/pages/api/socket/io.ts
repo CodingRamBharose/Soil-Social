@@ -1,14 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest } from 'next';
+import { NextApiResponseWithSocket } from '@/lib/socket';
 import { initSocket } from '@/lib/socket';
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse & {
-    socket: {
-      server: any;
-    };
-  }
+  res: NextApiResponseWithSocket
 ) {
   initSocket(res);
   res.end();
-} 
+}

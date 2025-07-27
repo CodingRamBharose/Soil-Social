@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     let parsedBody;
     try {
       parsedBody = verifySchema.parse(body);
-    } catch (err) {
+    } catch {
       return NextResponse.json(
         { success: false, message: 'Invalid input format' },
         { status: 400 }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     try {
       await user.save();
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { success: false, message: 'Database error while updating user' },
         { status: 500 }

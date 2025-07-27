@@ -149,7 +149,7 @@ export default function VerifyEmailPage() {
           </form>
         </Form>
         <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-          Didn't receive a code?{" "}
+          Didn&apos;t receive a code?{" "}
           <Button
             variant="link"
             className="p-0 text-primary dark:text-primary-400"

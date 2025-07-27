@@ -2,10 +2,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { SafeUser } from "@/types/User";
 
 export function useUserData() {
   const { data: session, update: updateSession } = useSession();
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<SafeUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

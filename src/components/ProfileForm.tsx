@@ -26,12 +26,20 @@ const techniques = [
   { value: "precision", label: "Precision Agriculture" },
 ];
 
-export function ProfileForm({ 
-  user, 
+interface User {
+  name?: string;
+  location?: string;
+  cropsGrown?: string[];
+  farmingTechniques?: string[];
+  bio?: string;
+}
+
+export function ProfileForm({
+  user,
   onSuccess,
   onCancel
-}: { 
-  user: any; 
+}: {
+  user: User;
   onSuccess: () => void;
   onCancel: () => void;
 }) {
@@ -48,7 +56,7 @@ export function ProfileForm({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: User) => {
     setIsSubmitting(true);
     try {
       const response = await fetch('/api/profile', {

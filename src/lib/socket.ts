@@ -1,5 +1,5 @@
 import { Server as NetServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import { Server as SocketIOServer, Socket } from 'socket.io';
 import { NextApiResponse } from 'next';
 import { Notification } from '@/models/Notification';
 
@@ -11,7 +11,7 @@ export type NextApiResponseWithSocket = NextApiResponse & {
   };
 };
 
-export const initSocket = (res: NextApiResponseWithSocket) => {
+export const initSocket = (res: NextApiResponseWithSocket): SocketIOServer => {
   if (!res.socket.server.io) {
     const io = new SocketIOServer(res.socket.server, {
       cors: {
@@ -23,23 +23,20 @@ export const initSocket = (res: NextApiResponseWithSocket) => {
       addTrailingSlash: false
     });
 
-    io.on('connection', (socket) => {
+    io.on('connection', (socket: Socket) => {
       const userId = socket.handshake.query.userId as string;
-      
+
       if (!userId) {
         console.error('No userId provided in socket connection');
         socket.disconnect();
         return;
       }
 
-      // Join user's room
       socket.join(userId);
       console.log(`User ${userId} connected to notifications`);
 
-      // Handle notification events
       socket.on('markAsRead', async (notificationId: string) => {
         try {
-          // Emit to specific user
           socket.to(userId).emit('notificationRead', notificationId);
         } catch (error) {
           console.error('Error handling markAsRead:', error);
@@ -57,13 +54,18 @@ export const initSocket = (res: NextApiResponseWithSocket) => {
 
     res.socket.server.io = io;
   }
-  return res.socket.server.io;
+
+  return res.socket.server.io!;
 };
 
-export const emitNotification = (io: SocketIOServer, userId: string, notification: Notification) => {
+export const emitNotification = (
+  io: SocketIOServer,
+  userId: string,
+  notification: Notification
+): void => {
   try {
     io.to(userId).emit('notification', notification);
   } catch (error) {
     console.error('Error emitting notification:', error);
   }
-}; 
+};

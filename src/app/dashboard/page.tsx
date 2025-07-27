@@ -9,7 +9,7 @@ import { usePosts } from "@/hooks/usePost";
 import { Loader2 } from "lucide-react";
 import { PostCard } from "@/components/dashboardComponents/PostCard";
 import { WeatherCard } from "@/components/dashboardComponents/WeatherCard";
-import { ConnectionCard } from "@/components/dashboardComponents/ConnectionCard";
+
 import { ConnectionRequestsCard } from "@/components/dashboardComponents/ConnectionRequestsCard";
 import CropGroupsCard from "@/components/dashboardComponents/CropGroupsCard";
 export default function DashboardPage() {
@@ -73,7 +73,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {user.connections?.length > 0 ? (
-              user.connections.slice(0, 4).map((connection: any) => (
+              user.connections.slice(0, 4).map((connection: { _id: string; name: string; profilePicture?: string }) => (
                 <div key={connection._id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar>

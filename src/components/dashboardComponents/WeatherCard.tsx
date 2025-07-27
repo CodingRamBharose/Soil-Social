@@ -27,7 +27,7 @@ const WEATHER_ICONS: Record<string, string> = {
 };
 
 export function WeatherCard({ location }: { location: string | null }) {
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export function WeatherCard({ location }: { location: string | null }) {
         <CardTitle>Weather Updates</CardTitle>
         <CardDescription className="flex items-center gap-1">
           <MapPin className="h-4 w-4" />
-          {weather?.location || location}
+          {(weather as { location?: string })?.location || location}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -105,12 +105,12 @@ export function WeatherCard({ location }: { location: string | null }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <span className="text-5xl">
-                  {weather.icon ? WEATHER_ICONS[weather.icon] : '☀️'}
+                  {(weather as { icon?: string }).icon ? WEATHER_ICONS[(weather as { icon: string }).icon] : '☀️'}
                 </span>
                 <div>
-                  <p className="text-3xl font-bold">{weather.temp}°C</p>
+                  <p className="text-3xl font-bold">{(weather as { temp: number }).temp}°C</p>
                   <p className="text-sm capitalize text-gray-600">
-                    {weather.condition.toLowerCase()}
+                    {((weather as { condition: string }).condition || '').toLowerCase()}
                   </p>
                 </div>
               </div>
@@ -119,7 +119,7 @@ export function WeatherCard({ location }: { location: string | null }) {
             <div className="grid grid-cols-3 gap-2 text-sm">
               <div className="flex items-center gap-2 p-2 bg-gray-800 rounded-lg">
                 <Thermometer className="h-10 w-10 text-blue-500" />
-                <span>Feels like {Math.round(weather.temp)}°</span>
+                <span>Feels like {Math.round((weather as { temp: number }).temp)}°</span>
               </div>
               <div className="flex items-center gap-2 p-2 bg-gray-800 rounded-lg">
                 <Droplets className="h-10 w-10 text-blue-300" />

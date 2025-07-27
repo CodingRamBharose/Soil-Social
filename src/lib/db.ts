@@ -11,9 +11,12 @@ interface MongooseCache {
   promise: Promise<typeof mongoose> | null;
 }
 
+/* eslint-disable no-var */
 declare global {
   var mongoose: MongooseCache;
 }
+/* eslint-enable no-var */
+
 
 let cached = global.mongoose;
 

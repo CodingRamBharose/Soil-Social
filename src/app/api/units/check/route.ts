@@ -26,13 +26,12 @@ export async function GET() {
       for (const unit of commonUnits) {
         await Unit.create(unit);
       }
-      console.log("Populated units in database");
     }
 
     const units = await Unit.find().sort({ name: 1 });
     return NextResponse.json({ success: true, data: units });
-  } catch (error) {
-    console.error("Error checking/populating units:", error);
+  } catch {
+
     return NextResponse.json(
       { success: false, error: "Failed to check/populate units" },
       { status: 500 }

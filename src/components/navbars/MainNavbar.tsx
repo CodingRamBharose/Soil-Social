@@ -4,11 +4,9 @@ import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CldImage } from 'next-cloudinary';
-import { useNotifications } from '@/context/NotificationContext';
 import { useUserData } from '@/hooks/useUserData';
-import { useState, useRef } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,31 +19,31 @@ import {
   Users,
   Sprout,
   Calendar,
-  BellDot,
+
   ShoppingCart,
   Search,
   ChevronDown
 } from 'lucide-react';
 
-interface SearchResult {
-  id: string;
-  username: string;
-  name: string;
-  avatar?: string;
-}
+// interface SearchResult {
+//   id: string;
+//   username: string;
+//   name: string;
+//   avatar?: string;
+// }
 
 export default function Navbar() {
   const { user } = useUserData();
-  const { unreadCount } = useNotifications();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  // const { unreadCount } = useNotifications();
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [isMobileOpen, setIsMobileOpen] = useState(false);
+  // const [isScrolled, setIsScrolled] = useState(false);
+  // const [isSearchOpen, setIsSearchOpen] = useState(false);
+  // const [searchQuery, setSearchQuery] = useState('');
+  // const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  // const [isSearching, setIsSearching] = useState(false);
+  // const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // const searchInputRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
 

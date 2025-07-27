@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,10 +10,10 @@ import { Product } from "@/types/marketplace";
 
 export default function MarketplacePage() {
   const { products, loading, error } = useProducts();
-  const [activeTab, setActiveTab] = useState("food");
 
-  const foodProducts = products.filter((product: Product) => product.category === "food");
-  const equipmentProducts = products.filter((product: Product) => product.category === "equipment");
+
+  const foodProducts = products.filter((product) => product.category === "food");
+  const equipmentProducts = products.filter((product) => product.category === "equipment");
 
   return (
     <div className="container mx-auto py-8 px-8">
@@ -54,8 +54,8 @@ export default function MarketplacePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {foodProducts.map((product: Product) => (
-                <ProductCard key={product._id} product={product} />
+              {foodProducts.map((product) => (
+                <ProductCard key={product._id} product={product as Product} />
               ))}
             </div>
           )}
@@ -76,8 +76,8 @@ export default function MarketplacePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {equipmentProducts.map((product: Product) => (
-                <ProductCard key={product._id} product={product} />
+              {equipmentProducts.map((product) => (
+                <ProductCard key={product._id} product={product as Product} />
               ))}
             </div>
           )}
@@ -107,7 +107,7 @@ function ProductCard({ product }: { product: Product }) {
             </p>
             {product.category === "food" && product.unit && (
               <p className="text-xs text-gray-400">
-                Available: {product.quantity} {product.unit}
+                Available: {product.quantity} {String(product.unit)}
               </p>
             )}
           </div>

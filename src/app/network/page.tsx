@@ -16,7 +16,7 @@ interface SuggestedUser {
 }
 
 export default function NetworkPage() {
-  const { user, refreshUserData } = useUserData();
+  const { user } = useUserData();
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
   const [loading, setLoading] = useState({
     connections: false,
@@ -38,7 +38,7 @@ export default function NetworkPage() {
 
   useEffect(() => {
     fetchSuggestions();
-  }, [user?.connections]);
+  }, [user?.connections, fetchSuggestions]);
 
   if (!user) {
     return (
@@ -63,7 +63,7 @@ export default function NetworkPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {user.connections?.length > 0 ? (
-                user.connections.map((connection: any) => (
+                user.connections.map((connection: { _id: string; name: string; profilePicture?: string }) => (
                   <ConnectionCard key={connection._id} user={{ ...connection, id: connection._id }} />
                 ))
               ) : (

@@ -17,22 +17,16 @@ const commonUnits = [
 async function populateUnits() {
   try {
     await connectToDatabase();
-    console.log("Connected to database");
 
     for (const unit of commonUnits) {
       const existingUnit = await Unit.findOne({ symbol: unit.symbol });
       if (!existingUnit) {
         await Unit.create(unit);
-        console.log(`Created unit: ${unit.name} (${unit.symbol})`);
-      } else {
-        console.log(`Unit already exists: ${unit.name} (${unit.symbol})`);
       }
     }
-
-    console.log("Finished populating units");
     process.exit(0);
-  } catch (error) {
-    console.error("Error populating units:", error);
+  } catch {
+
     process.exit(1);
   }
 }

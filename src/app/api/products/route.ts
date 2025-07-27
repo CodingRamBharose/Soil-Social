@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
-import Product from "@/models/Product";
+
 
 export async function POST(req: Request) {
   try {
@@ -29,10 +29,9 @@ export async function POST(req: Request) {
       success: true,
       data: { _id: product.insertedId, ...data },
     });
-  } catch (error: any) {
-    console.error("Product creation error:", error);
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to create product" },
+      { success: false, error: error instanceof Error ? error.message : "Failed to create product" },
       { status: 500 }
     );
   }
@@ -47,7 +46,7 @@ export async function GET(req: Request) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search");
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
     if (category) query.category = category;
     if (search) {
       query.$or = [
@@ -77,7 +76,7 @@ export async function GET(req: Request) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Product fetch error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to fetch products" },

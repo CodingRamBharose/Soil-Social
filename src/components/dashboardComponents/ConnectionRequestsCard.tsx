@@ -10,11 +10,8 @@ import Link from "next/link";
 export function ConnectionRequestsCard() {
   const { user } = useUserData();
   const { 
-    sendRequest, 
     acceptRequest, 
     loading, 
-    error,
-    clearError 
   } = useConnections();
 
   if (!user?.connectionRequests?.received?.length) return null;
@@ -26,7 +23,7 @@ export function ConnectionRequestsCard() {
         <CardDescription>Pending requests from other farmers</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {user.connectionRequests.received.map((request: any) => (
+        {user.connectionRequests.received.map((request: { _id: string; name: string; profilePicture?: string; cropsGrown?: string[] }) => (
           <div key={request._id} className="flex items-center justify-between p-2">
             <div className="flex items-center gap-3">
               <Avatar>

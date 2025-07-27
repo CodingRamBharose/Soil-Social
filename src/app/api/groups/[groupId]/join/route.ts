@@ -26,7 +26,7 @@ export async function POST(
 
     // Check if user is already a member
     const isMember = group.members.some(
-      (member: any) => member.user.toString() === session.user.id
+      (member: { user: string }) => member.user.toString() === session.user.id
     );
 
     if (isMember) {

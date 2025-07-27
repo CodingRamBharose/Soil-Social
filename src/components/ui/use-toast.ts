@@ -15,7 +15,7 @@ export function useToast() {
         description,
         action: {
           label: "Try again",
-          onClick: () => console.log("Retry action"),
+          onClick: () => {},
         },
       });
     } else {

@@ -17,7 +17,7 @@ export const options: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(credentials: { email: string; password: string } | undefined): Promise<unknown> {
         await dbConnect();
 
         const user = await UserModel.findOne({ email: credentials?.email });
@@ -138,9 +138,7 @@ export const options: NextAuthOptions = {
             user.cropsGrown = newUser.cropsGrown;
             user.farmingTechniques = newUser.farmingTechniques;
 
-            console.log('Created new user from Google sign-in:', newUser.email);
-          } catch (error) {
-            console.error('Error creating user from Google sign-in:', error);
+          } catch {
             return false; // Prevent sign-in if user creation fails
           }
         }

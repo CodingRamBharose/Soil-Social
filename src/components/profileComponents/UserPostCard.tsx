@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function UserPostCard({ post, onDelete }: { post: any; onDelete: (postId: string) => Promise<boolean> }) {
+export function UserPostCard({ post, onDelete }: { post: { _id: string; content: string; author: { name: string; profilePicture?: string }; likes?: string[]; comments?: unknown[]; images?: string[]; createdAt: string }; onDelete: (postId: string) => Promise<boolean> }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
   const [showComments, setShowComments] = useState(false);

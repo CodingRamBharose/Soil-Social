@@ -125,7 +125,7 @@ export default function CreatePostPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="content">What's on your mind?</Label>
+              <Label htmlFor="content">What&apos;s on your mind?</Label>
               <Textarea
                 id="content"
                 value={formData.content}

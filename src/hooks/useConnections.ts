@@ -2,11 +2,6 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
-interface ConnectionError {
-  message?: string;
-  error?: string;
-}
-
 export function useConnections() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

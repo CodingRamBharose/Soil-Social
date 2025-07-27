@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useUserData } from "./useUserData";
+import { SafeUser } from "@/types/User";
 
 export function useSuggestedConnections() {
   const { user } = useUserData();
-  const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
+  const [suggestedUsers, setSuggestedUsers] = useState<SafeUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

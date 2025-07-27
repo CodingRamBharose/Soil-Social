@@ -26,7 +26,7 @@ export async function GET() {
       );
     }
 
-    const query: any = { 
+    const query: Record<string, unknown> = {
       _id: { $ne: currentUser._id },
       connections: { $nin: [currentUser._id] },
       $and: [
