@@ -27,9 +27,9 @@ interface Message {
 }
 
 interface ChatPageProps {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 }
 
 export default function ChatPage({ params }: ChatPageProps) {
@@ -43,12 +43,23 @@ export default function ChatPage({ params }: ChatPageProps) {
     profilePicture?: string;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    async function getParams() {
+      const resolvedParams = await params;
+      setUserId(resolvedParams.userId);
+    }
+    getParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!userId || !user?.id) return;
+
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`/api/messages/${params.userId}`);
+        const response = await fetch(`/api/messages/${userId}`);
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
         setMessages(data.messages);
@@ -60,19 +71,17 @@ export default function ChatPage({ params }: ChatPageProps) {
       }
     };
 
-    if (user?.id) {
-      fetchMessages();
-    }
-  }, [user?.id, params.userId]);
+    fetchMessages();
+  }, [user?.id, userId]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && userId) {
       socket.on("message", (message: Message) => {
         if (
-          (message.sender._id === params.userId &&
+          (message.sender._id === userId &&
             message.receiver._id === user?.id) ||
           (message.sender._id === user?.id &&
-            message.receiver._id === params.userId)
+            message.receiver._id === userId)
         ) {
           setMessages((prev) => [...prev, message]);
         }
@@ -84,7 +93,7 @@ export default function ChatPage({ params }: ChatPageProps) {
         socket.off("message");
       }
     };
-  }, [socket, params.userId, user?.id]);
+  }, [socket, userId, user?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,10 +101,10 @@ export default function ChatPage({ params }: ChatPageProps) {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !user?.id) return;
+    if (!newMessage.trim() || !user?.id || !userId) return;
 
     try {
-      const response = await fetch(`/api/messages/${params.userId}`, {
+      const response = await fetch(`/api/messages/${userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -38,19 +38,29 @@ interface Event {
   }>;
 }
 
-export default function EventDetailsPage({ params }: { params: { id: string } }) {
-
+export default function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = useSession();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAttending, setIsAttending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [eventId, setEventId] = useState<string>('');
 
   useEffect(() => {
+    async function getParams() {
+      const resolvedParams = await params;
+      setEventId(resolvedParams.id);
+    }
+    getParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!eventId) return;
+
     async function fetchEvent() {
       try {
-        const response = await fetch(`/api/events/${params.id}`);
+        const response = await fetch(`/api/events/${eventId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch event');
         }
@@ -68,7 +78,7 @@ export default function EventDetailsPage({ params }: { params: { id: string } })
     }
 
     fetchEvent();
-  }, [params.id, session?.user?.id]);
+  }, [eventId, session?.user?.id]);
 
   const handleRSVP = async () => {
     if (!session) {
@@ -78,7 +88,7 @@ export default function EventDetailsPage({ params }: { params: { id: string } })
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/events/${params.id}/rsvp`, {
+      const response = await fetch(`/api/events/${eventId}/rsvp`, {
         method: isAttending ? "DELETE" : "POST",
       });
 
@@ -88,7 +98,7 @@ export default function EventDetailsPage({ params }: { params: { id: string } })
       }
 
       // Refresh event data
-      const updatedEvent = await fetch(`/api/events/${params.id}`).then(res => res.json());
+      const updatedEvent = await fetch(`/api/events/${eventId}`).then(res => res.json());
       setEvent(updatedEvent);
       setIsAttending(!isAttending);
       toast.success(isAttending ? "RSVP cancelled" : "RSVP successful");
