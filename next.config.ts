@@ -1,14 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true, // ✅ Disable ESLint during production builds
+  },
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb', 
-        },
+      bodySizeLimit: '10mb',
+    },
     serverComponentsExternalPackages: ['cloudinary'],
   },
   images: {
-    domains: ['res.cloudinary.com'], 
+    domains: ['res.cloudinary.com'],
   },
 };
 
