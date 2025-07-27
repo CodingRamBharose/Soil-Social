@@ -8,9 +8,10 @@ import { createNotification } from "@/lib/notifications";
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -19,7 +20,7 @@ export async function POST(
       );
     }
 
-    if (!mongoose.Types.ObjectId.isValid(params.id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid user ID format" },
         { status: 400 }
@@ -30,7 +31,7 @@ export async function POST(
 
     const [currentUser, requesterUser] = await Promise.all([
       UserModel.findOne({ email: session.user.email }),
-      UserModel.findById(params.id)
+      UserModel.findById(id)
     ]);
 
     if (!currentUser || !requesterUser) {

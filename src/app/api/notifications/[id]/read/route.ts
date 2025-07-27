@@ -4,14 +4,15 @@ import { NotificationModel } from '@/models/Notification';
 import { getServerSession } from 'next-auth';
 import { options as authOptions } from '@/app/api/auth/[...nextauth]/options';
 import connectDB from '@/config/dbConnect';
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   await connectDB();
   const notification = await NotificationModel.findOneAndUpdate(
-    { _id: params.id, user: session.user.id },
+    { _id: id, user: session.user.id },
     { read: true },
     { new: true }
   );

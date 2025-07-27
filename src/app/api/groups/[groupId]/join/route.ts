@@ -6,9 +6,10 @@ import CropGroup from "@/models/CropGroup";
 
 export async function POST(
   request: Request,
-  { params }: { params: { groupId: string } }
+  { params }: { params: Promise<{ groupId: string }> }
 ) {
   try {
+    const { groupId } = await params;
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,7 +17,7 @@ export async function POST(
 
     await connectToDatabase();
 
-    const group = await CropGroup.findById(params.groupId);
+    const group = await CropGroup.findById(groupId);
     if (!group) {
       return NextResponse.json(
         { error: "Group not found" },

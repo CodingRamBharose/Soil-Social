@@ -6,19 +6,20 @@ import mongoose from "mongoose";
 // GET: Fetch posts by user ID
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   await connectDB();
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(params.userId)) {
+    const { userId } = await params;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return NextResponse.json(
         { error: "Invalid user ID format" },
         { status: 400 }
       );
     }
 
-    const posts = await PostModel.find({ author: params.userId })
+    const posts = await PostModel.find({ author: userId })
       .sort({ createdAt: -1 })
       .populate({
         path: 'author',
