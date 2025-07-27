@@ -48,8 +48,6 @@ export default function SignInPage() {
       });
     }
 
-    console.log(result);
-
     if (result?.url) {
       router.push("/dashboard");
     }
@@ -117,7 +115,7 @@ export default function SignInPage() {
       </form>
     </Form>
     <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-      Don't have an account?{" "}
+      Don&apos;t have an account?{" "}
       <Link href="/sign-up" className="text-primary hover:underline dark:text-primary-400">
         Sign up
       </Link>

@@ -3,11 +3,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, User, Share2, MessageCircle } from "lucide-react";
+import { Calendar, MapPin, Users, Share2, MessageCircle } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -39,7 +39,7 @@ interface Event {
 }
 
 export default function EventDetailsPage({ params }: { params: { id: string } }) {
-  const router = useRouter();
+
   const { data: session } = useSession();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +58,7 @@ export default function EventDetailsPage({ params }: { params: { id: string } })
         setEvent(data);
         // Check if current user is attending
         if (session?.user?.id) {
-          setIsAttending(data.attendees.some((attendee: any) => attendee._id === session.user.id));
+          setIsAttending(data.attendees.some((attendee: { _id: string }) => attendee._id === session.user.id));
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -111,7 +111,7 @@ export default function EventDetailsPage({ params }: { params: { id: string } })
     return (
       <div className="container mx-auto py-8 text-center">
         <h1 className="text-2xl font-bold text-gray-600">Event not found</h1>
-        <p className="text-gray-500 mt-4">The event you're looking for doesn't exist or has been removed.</p>
+        <p className="text-gray-500 mt-4">The event you&apos;re looking for doesn&apos;t exist or has been removed.</p>
         <Button asChild className="mt-6">
           <Link href="/events">Back to Events</Link>
         </Button>

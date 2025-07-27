@@ -58,8 +58,8 @@ export default function MessagesPage() {
 
         setConversations(conversationsData);
         setConnections(connectionsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      } catch {
+        // Error handled silently
       } finally {
         setLoading(false);
       }

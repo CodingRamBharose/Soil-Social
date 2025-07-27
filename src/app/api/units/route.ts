@@ -6,10 +6,9 @@ export async function GET() {
   try {
     await connectToDatabase();
     const units = await Unit.find().sort({ name: 1 });
-    console.log("Fetched units:", units); // Debug log
     return NextResponse.json({ success: true, data: units });
-  } catch (error) {
-    console.error("Error fetching units:", error);
+  } catch {
+
     return NextResponse.json(
       { success: false, error: "Failed to fetch units" },
       { status: 500 }

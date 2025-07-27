@@ -13,7 +13,7 @@ import { useUserData } from "@/hooks/useUserData";
 import { CommentSection } from "./CommentSection";
 import { toast } from "sonner";
 
-export function PostCard({ post }: { post: any }) {
+export function PostCard({ post }: { post: Post }) {
   const { user: currentUser } = useUserData();
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);

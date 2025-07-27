@@ -1,123 +1,132 @@
 "use client";
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { Notification } from '@/models/Notification';
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
+import { ClientNotification } from '@/types/notification';
 import { useUserData } from '@/hooks/useUserData';
 import { io, Socket } from 'socket.io-client';
 
 type NotificationContextType = {
-  notifications: Notification[];
+  notifications: ClientNotification[];
   unreadCount: number;
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   loading: boolean;
-  addNotification: (notification: Notification) => void;
+  addNotification: (notification: ClientNotification) => void;
   isConnected: boolean;
 };
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType | undefined>(
+  undefined
+);
 
-export function NotificationProvider({ children }: { children: React.ReactNode }) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+export function NotificationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [notifications, setNotifications] = useState<ClientNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useUserData();
   const socketRef = useRef<Socket | null>(null);
 
-  // Initialize WebSocket connection
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3000';
-    
-    // Only create new socket if one doesn't exist
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? 'http://localhost:3000';
+
     if (!socketRef.current) {
       const newSocket = io(socketUrl, {
         query: { userId: user.id },
         transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
       });
 
       newSocket.on('connect', () => {
-        console.log('Connected to notification server');
         setIsConnected(true);
         setLoading(false);
       });
 
       newSocket.on('disconnect', () => {
-        console.log('Disconnected from notification server');
         setIsConnected(false);
       });
 
-      newSocket.on('connect_error', (error) => {
-        console.error('Connection error:', error);
+      newSocket.on('connect_error', () => {
         setIsConnected(false);
-      });
-
-      newSocket.on('notification', (notification: Notification) => {
-        setNotifications(prev => [notification, ...prev]);
-        setUnreadCount(prev => prev + 1);
-      });
-
-      newSocket.on('notifications', (data: { notifications: Notification[], unreadCount: number }) => {
-        setNotifications(data.notifications);
-        setUnreadCount(data.unreadCount);
         setLoading(false);
       });
+
+      newSocket.on('notification', (notif: ClientNotification) => {
+        setNotifications((prev) => [notif, ...prev]);
+        setUnreadCount((prev) => prev + 1);
+      });
+
+      newSocket.on(
+        'notifications',
+        (data: { notifications: ClientNotification[]; unreadCount: number }) => {
+          setNotifications(data.notifications);
+          setUnreadCount(data.unreadCount);
+          setLoading(false);
+        }
+      );
 
       socketRef.current = newSocket;
     }
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
+      socketRef.current?.close();
+      socketRef.current = null;
     };
-  }, [user?.id]); // Only depend on user.id
+  }, [user?.id]);
 
   const markAsRead = useCallback(async (id: string) => {
     try {
       await fetch(`/api/notifications/${id}/read`, { method: 'PUT' });
-      setNotifications(prev => 
-        prev.map(n => n._id === id ? { ...n, read: true } as Notification : n)
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, read: true } : n))
       );
-      setUnreadCount(prev => prev - 1);
+      setUnreadCount((prev) => Math.max(prev - 1, 0));
       socketRef.current?.emit('markAsRead', id);
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
+    } catch {
+      console.error('Failed to mark notification as read');
     }
   }, []);
 
   const markAllAsRead = useCallback(async () => {
     try {
       await fetch('/api/notifications/read-all', { method: 'PUT' });
-      setNotifications(prev => 
-        prev.map(n => ({ ...n, read: true } as Notification))
-      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
-    } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+    } catch {
+      console.error('Failed to mark all notifications as read');
     }
   }, []);
 
-  const addNotification = useCallback((notification: Notification) => {
-    setNotifications(prev => [notification, ...prev]);
-    setUnreadCount(prev => prev + 1);
+  const addNotification = useCallback((notification: ClientNotification) => {
+    setNotifications((prev) => [notification, ...prev]);
+    setUnreadCount((prev) => prev + 1);
   }, []);
 
   return (
-    <NotificationContext.Provider 
-      value={{ 
-        notifications, 
-        unreadCount, 
-        markAsRead, 
+    <NotificationContext.Provider
+      value={{
+        notifications,
+        unreadCount,
+        markAsRead,
         markAllAsRead,
         loading,
         addNotification,
-        isConnected
+        isConnected,
       }}
     >
       {children}
@@ -127,8 +136,8 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
 export function useNotifications() {
   const context = useContext(NotificationContext);
-  if (context === undefined) {
-    throw new Error('useNotifications must be used within a NotificationProvider');
+  if (!context) {
+    throw new Error('useNotifications must be used within NotificationProvider');
   }
   return context;
 }

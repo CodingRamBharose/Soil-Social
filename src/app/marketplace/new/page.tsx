@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Utensils, Wrench, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ProductCreateInput } from "@/types/marketplace";
-import { Unit } from "@/types/unit";
+
 
 const UNITS = [
   { value: "kg", label: "Kilogram (kg)" },
@@ -71,7 +71,7 @@ export default function NewProductPage() {
       });
 
       router.push('/marketplace');
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to list product. Please try again.",

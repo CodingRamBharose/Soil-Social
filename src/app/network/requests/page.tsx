@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function ConnectionRequestsPage() {
   const { user, refreshUserData } = useUserData();
-  const { acceptRequest, loading, error, clearError } = useConnections();
+  const { acceptRequest, loading, clearError } = useConnections();
 
   const handleAccept = async (requesterId: string) => {
     clearError();
@@ -32,7 +32,7 @@ export default function ConnectionRequestsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {user?.connectionRequests?.received?.length > 0 ? (
-            user.connectionRequests.received.map((request: any) => (
+            user.connectionRequests.received.map((request: { _id: string; name: string; profilePicture?: string; location?: string; bio?: string }) => (
               <div key={request._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <ConnectionCard user={request} />
                 <Button

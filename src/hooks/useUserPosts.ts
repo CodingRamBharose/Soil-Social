@@ -18,9 +18,11 @@ export function useUserPosts(userId: string | undefined) {
         if (!response.ok) throw new Error("Failed to fetch user posts");
         const data = await response.json();
         setPosts(data);
-      } catch (err: any) {
-        console.error("Error fetching user posts:", err);
-        setError(err.message || "Unknown error");
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Unknown error occurred";
+        console.error("Error fetching user posts:", message);
+        setError(message);
       } finally {
         setLoading(false);
       }

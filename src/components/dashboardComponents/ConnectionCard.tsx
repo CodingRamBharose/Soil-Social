@@ -1,7 +1,8 @@
 "use client";
+import { useCallback } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { UserPlus, UserMinus, Loader2, UserCheck, UserX } from "lucide-react";
+import { UserPlus, Loader2, UserCheck, UserX } from "lucide-react";
 import { useConnectionStatus } from "@/hooks/useConnectionStatus";
 import { useConnections } from "@/hooks/useConnections";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ export function ConnectionCard({ user }: { user: User }) {
     clearError 
   } = useConnections();
 
-  const handleAction = async () => {
+  const handleAction = useCallback(async () => {
     clearError();
     try {
       if (isConnected) {
@@ -43,10 +44,10 @@ export function ConnectionCard({ user }: { user: User }) {
         await sendRequest(user.id);
         toast.success("Request sent");
       }
-    } catch (err) {
+    } catch {
       toast.error(error || "Action failed");
     }
-  };
+  }, [clearError, isConnected, removeConnection, user.id, requestReceived, acceptRequest, sendRequest, error]);
 
   return (
     <div className="flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-lg">

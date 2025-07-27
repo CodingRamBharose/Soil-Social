@@ -26,7 +26,7 @@ export default function CropGroupsCard() {
       }
       const data = await response.json();
       setGroups(data);
-    } catch (err) {
+    } catch {
       setError('Failed to load groups');
     } finally {
       setLoading(false);
@@ -42,7 +42,7 @@ export default function CropGroupsCard() {
         throw new Error('Failed to join group');
       }
       fetchGroups(); // Refresh groups list
-    } catch (err) {
+    } catch {
       setError('Failed to join group');
     }
   };

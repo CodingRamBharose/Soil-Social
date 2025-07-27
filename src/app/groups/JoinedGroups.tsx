@@ -38,7 +38,7 @@ export function JoinedGroups({ joinedGroups }: JoinedGroupsProps) {
       <CardContent className="space-y-4">
         {joinedGroups.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
-            You haven't joined any groups yet.
+            You haven&apos;t joined any groups yet.
           </div>
         ) : (
           <div className="space-y-4">

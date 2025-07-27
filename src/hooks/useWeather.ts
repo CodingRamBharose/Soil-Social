@@ -1,7 +1,8 @@
+import { WeatherData } from "@/types/weather";
 import { useState, useEffect } from "react";
 
 export function useWeather(location: string | null) {
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,6 @@ export function useWeather(location: string | null) {
         const data = await response.json();
         setWeather(data);
       } catch (err) {
-        console.error("Weather fetch error:", err);
         setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);

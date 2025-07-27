@@ -7,7 +7,7 @@ interface GroupFormProps {
 }
 
 export default function GroupForm({ onClose }: GroupFormProps) {
-  const { data: session } = useSession();
+  useSession();
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',

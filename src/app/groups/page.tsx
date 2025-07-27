@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Sprout, Wheat, LeafyGreen, Apple, BadgeCheck, Loader2, Users, Calendar } from "lucide-react";
+import { Sprout } from "lucide-react";
 import { useGroups } from "@/hooks/useGroups";
 import { GroupsList } from "./GroupsList";
 import { JoinedGroups } from "./JoinedGroups";
@@ -37,7 +37,7 @@ export default function GroupsPage() {
         throw new Error('Failed to create group');
       }
 
-      const data = await response.json();
+      await response.json();
       toast({
         title: "Group created successfully",
         description: `Your ${name} group has been created.`,
@@ -48,7 +48,7 @@ export default function GroupsPage() {
       setName("");
       setDescription("");
       setCropType("");
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "All fields are required.",
@@ -71,7 +71,7 @@ export default function GroupsPage() {
         title: "Success",
         description: "You have joined the group successfully.",
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to join group. Please try again.",
@@ -80,13 +80,13 @@ export default function GroupsPage() {
     }
   };
 
-  const cropIcons = {
-    wheat: <Wheat className="h-6 w-6 text-amber-500" />,
-    rice: <Sprout className="h-6 w-6 text-green-600" />,
-    vegetables: <LeafyGreen className="h-6 w-6 text-emerald-500" />,
-    fruits: <Apple className="h-6 w-6 text-red-500" />,
-    organic: <BadgeCheck className="h-6 w-6 text-purple-500" />
-  };
+  // const cropIcons = {
+  //   wheat: <Wheat className="h-6 w-6 text-amber-500" />,
+  //   rice: <Sprout className="h-6 w-6 text-green-600" />,
+  //   vegetables: <LeafyGreen className="h-6 w-6 text-emerald-500" />,
+  //   fruits: <Apple className="h-6 w-6 text-red-500" />,
+  //   organic: <BadgeCheck className="h-6 w-6 text-purple-500" />
+  // };
 
   return (
     <div className="container mx-auto py-8 px-8">

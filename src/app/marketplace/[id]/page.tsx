@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Utensils, Wrench, Loader2, MessageSquare, Phone } from "lucide-react";
+import { Utensils, Wrench, Loader2, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/types/marketplace";
 
@@ -24,7 +24,7 @@ export default function ProductDetailPage() {
         }
         const data = await response.json();
         setProduct(data.data);
-      } catch (error) {
+      } catch {
         toast({
           title: "Error",
           description: "Failed to load product details.",

@@ -1,5 +1,4 @@
-import { Schema, model, models } from 'mongoose';
-import { IUser } from './User';
+import { Schema, model, type Model } from 'mongoose';
 
 export enum EventType {
   WORKSHOP = 'workshop',
@@ -50,11 +49,10 @@ const eventSchema = new Schema<IEvent>({
   timestamps: true
 });
 
-// Create 2dsphere index for location
 eventSchema.index({ location: '2dsphere' });
 
-// Check if the model exists before creating it
-let Event: any;
+// Safe model creation with typing
+let Event: Model<IEvent>;
 
 try {
   Event = model<IEvent>('Event');
@@ -62,4 +60,4 @@ try {
   Event = model<IEvent>('Event', eventSchema);
 }
 
-export { Event }; 
+export { Event };

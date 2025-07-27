@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,7 +36,6 @@ export default function CropGroupsCard() {
         throw new Error('Failed to create group');
       }
 
-      const data = await response.json();
       toast({
         title: "Group created successfully",
         description: `Your ${name} group has been created.`,
@@ -47,11 +46,12 @@ export default function CropGroupsCard() {
       setName("");
       setDescription("");
       setCropType("");
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create group. Please try again.",
         variant: "destructive",
+        
       });
     }
   };

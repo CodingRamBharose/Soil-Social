@@ -8,14 +8,10 @@ import { authOptions } from "@/lib/auth";
 
 export async function GET() {
   try {
-    console.log('Connecting to database...');
     await connectToDatabase();
-    console.log('Database connected, getting session...');
     const session = await getServerSession(authOptions);
-    // console.log('Session:', session);
 
     if (!session?.user?.email) {
-      console.log('No session or email found');
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

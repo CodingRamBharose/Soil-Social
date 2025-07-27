@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { CldImage } from "next-cloudinary";
 import { Edit2, Camera, Loader2 } from "lucide-react";
 import { ProfileForm } from "@/components/ProfileForm";
@@ -188,7 +188,7 @@ export default function ProfilePage() {
             ))
           ) : (
             <div className="text-center py-8">
-              <p>You haven't created any posts yet.</p>
+              <p>You haven&apos;t created any posts yet.</p>
               <Button asChild className="mt-4">
                 <a href="/post/create">Create Post</a>
               </Button>

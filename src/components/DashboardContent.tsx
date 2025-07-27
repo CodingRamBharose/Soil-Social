@@ -2,8 +2,8 @@
 import { CldImage } from "next-cloudinary";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useUserData } from "@/hooks/useUserData";
 import { usePosts } from "@/hooks/usePost";
 import { Loader2 } from "lucide-react";

@@ -31,7 +31,7 @@ export async function GET(
       success: true,
       data: { ...product, seller },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Product fetch error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to fetch product" },
@@ -83,7 +83,7 @@ export async function PATCH(
       success: true,
       data: updatedProduct,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Product update error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to update product" },
@@ -129,7 +129,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Product deletion error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to delete product" },

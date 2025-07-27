@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import connectDB from "@/config/dbConnect";
 import UserModel, { User } from "@/models/User";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import { createNotification } from "@/lib/notifications";
 
 export async function POST(
@@ -25,7 +25,7 @@ export async function POST(
     let targetUserId: Types.ObjectId;
     try {
       targetUserId = new Types.ObjectId(params.id);
-    } catch (err) {
+    } catch {
       return NextResponse.json(
         { error: "Invalid user ID format" },
         { status: 400 }
